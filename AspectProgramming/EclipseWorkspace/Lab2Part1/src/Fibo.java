@@ -25,7 +25,7 @@ public class Fibo {
 
     public static void main( String[] args ) {
         Fibo f = new Fibo();
-        for ( int n : new int[]{ 0, 1, 2, 3 } ) { //, 5, 10, 15, 20, 25, 30, 35, 50
+        for ( int n : new int[]{ 0, 1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 50 } ) {
             System.out.println( "Fibo(" + n + ") = " + f.fibo( n ) );
         }
     }

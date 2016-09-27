@@ -4,44 +4,60 @@ import org.aspectj.lang.Signature;
 
 import java.util.Arrays;
 import java.util.HashMap;
-
-import org.aspectj.lang.JoinPoint;
+import java.util.List;
 
 @Aspect
 public class Memoization {
-	private HashMap<Signature, Object[]> functionMap = new HashMap<Signature, Object[]>();
-	private HashMap<Object[], Object> argsMap = new HashMap<Object[], Object>();
+	private HashMap<Signature, HashMap<List<Object>, Object>> functionMap = new HashMap<Signature, HashMap<List<Object>, Object>>();
 	
-	@Around("@annotation(Memoizable) && execution(* *(..))")
-	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable{
-		//System.out.println(joinPoint.toString());
+	/**
+	 * Stores the method output for any function with the given arguments, and returns the value
+	 * if the function has had its output stored before. Otherwise, allows the method
+	 * to proceed and stores the value for later use. Method must be annotated with
+	 * Memoizable to trigger this around.
+	 * @param joinPoint - Used to retrieve the method information for use in the advice
+	 * @return Object - The cached or computed value returned by the called method
+	 * @throws Throwable - Throws any errors that continuing method execution causes
+	 */
+	@Around("@annotation(Memoizable) && call(* *.*(..))")
+	public Object advice(ProceedingJoinPoint joinPoint) throws Throwable {
 		Signature mySig = joinPoint.getSignature();
-		Object[] myArgs = joinPoint.getArgs();
+		HashMap<List<Object>, Object> functionArgsMap = null;
+		if( this.functionMap.containsKey(mySig) ){
+			functionArgsMap = this.functionMap.get(mySig);
+		}else{
+			functionArgsMap = new HashMap<List<Object>, Object>();
+			this.functionMap.put(mySig, functionArgsMap);
+		}
+		List<Object> myArgs = Arrays.asList(joinPoint.getArgs());
 		
 		Object returnObject = null;
-		
 		try{
-			
-			if( this.argsMap.containsKey(myArgs) ){
-				System.out.println("in");
-				returnObject = this.argsMap.get(myArgs);
+			if( functionArgsMap.containsKey(myArgs) ){
+				returnObject = functionArgsMap.get(myArgs);
 			}else{
 				returnObject = joinPoint.proceed();
-				this.argsMap.put(myArgs, returnObject);
-				
-				//System.out.println(Arrays.toString(myArgs));
-				//System.out.println(this.argsMap.get(myArgs).toString());
-				for( Object[] k: this.argsMap.keySet() ){
-					System.out.println("Start out");
-					System.out.println(Arrays.toString(k) + ": " + this.argsMap.get(k).toString());
-				}
+				functionArgsMap.put(myArgs, returnObject);
 			}
-			
 		}catch(Throwable throwable){
 			throw throwable;
 		}
 		
 		return returnObject;
 	}
+	
+	/**
+	 * Compile time error message for static methods annotated with Memoizable.
+	 */
+	@DeclareError("@annotation(Memoizable) && execution(static * *.*(..))")
+	static final String staticError = "static methods may not be annotated with Memoizable";
+	
+	/**
+	 * Compile time error message for void return type methods annotated with Memoizable.
+	 */
+	@DeclareError("@annotation(Memoizable) && execution(void *.*(..))")
+	static final String voidError = "methods that return void may not be annotated with Memoizable";
+	
+	
 
 }
