@@ -1,0 +1,12 @@
+#version 150
+
+// incoming color from the vertex shader
+in vec4 rescolor;
+
+// outgoing color to the rest of the pipeline
+out vec4 fragcolor;
+
+void main()
+{
+    fragcolor = rescolor;
+}

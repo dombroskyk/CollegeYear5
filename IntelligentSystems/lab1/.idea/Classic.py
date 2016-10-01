@@ -68,10 +68,11 @@ def main():
             pixel = Pixel(pixel_access[x, y], elevation)
             map.add_pixel(y, pixel)
 
-    map.show_map()
+    #map.show_map()
+    a_star(flags[0], flags[1])
 
 
-def a_star(start):
+def a_star(start, target):
     pq = [(heuristic(start), start)]
     parents = {start: "S"}
     while len(pq) > 0:
@@ -83,7 +84,8 @@ def a_star(start):
                 heapq.heappush(pq, (heuristic(s), s))
                 parents[s] = curr
 
-
+def heuristic(node):
+    
 
 def estimated_cost(source, target):
     distance = Math.sqrt( (target[1] - source[1])**2 + (target[0] - source[0])**2 )

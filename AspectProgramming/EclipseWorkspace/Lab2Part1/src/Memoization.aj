@@ -40,7 +40,7 @@ public class Memoization {
 			if( functionArgsMap.containsKey(myArgs) ){
 				returnObject = functionArgsMap.get(myArgs);
 			}else{
-				returnObject = joinPoint.proceed();
+				returnObject = joinPoint.proceed(joinPoint.getArgs());
 				functionArgsMap.put(myArgs, returnObject);
 			}
 		}catch(Throwable throwable){
