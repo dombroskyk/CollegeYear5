@@ -66,13 +66,16 @@ def main():
     file_name = sys.argv[1]
     flags = []
     mode = "Classic"
+    time_limit = 0
     with open(file_name) as f:
         for i, line in enumerate(f):
-            if i > 0:
-                line = line.strip().split()
-                flags.append((int(line[0]), int(line[1])))
+            line = line.strip().split()
+            if i == 0:
+                mode = line[0]
+            elif mode == "ScoreO" and i == 1:
+                time_limit = line[0]
             else:
-                mode = line
+                flags.append((int(line[0]), int(line[1])))
 
 
     # build map image info
@@ -94,15 +97,18 @@ def main():
             pixel = Pixel(pixel_access[x, y], elevation)
             map.add_pixel(y, pixel)
 
-    #map.show_map()
-    source_flag_index = 0
-    for i in range(len(flags) - 1):
-        if i == 0:
-            map.get_pixel(flags[0][0], flags[0][1]).current_cost = 0
-        parents = a_star(flags[i], flags[i+1], map)
-        trace_map(flags[i+1], parents, map)
 
-    map.prep_show_map()
+    if mode == "Classic":
+        for i in range(len(flags) - 1):
+            if i == 0:
+                map.get_pixel(flags[0][0], flags[0][1]).current_cost = 0
+            parents = a_star(flags[i], flags[i+1], map)
+            trace_map(flags[i+1], parents, map)
+
+        map.prep_show_map()
+
+    elif mode == "ScoreO":
+        print("im a scoreo")
 
 
 def a_star(start, target, map):
