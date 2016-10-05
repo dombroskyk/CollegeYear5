@@ -1,7 +1,9 @@
 from PIL import Image
+from copy import deepcopy
 import heapq
 import sys
 import math
+
 
 PATH = (255, 0, 0, 255)
 FOOTPATH = (0, 0, 0, 255)
@@ -15,17 +17,16 @@ WATER = (0, 0, 255, 255)
 PAVED_ROAD = (71, 51, 3, 255)
 OOB = (205, 0, 101, 255)
 
+
 class Pixel(object):
 
     def __init__(self, color, elevation):
         self.color = color
         self.elevation = elevation
         self.path = False
-        self.current_cost = float("inf")
+        self.current_cost = 0
         self.terrain_cost = None #TODO
 
-    def travel_cost(self, target):
-        pass
 
 class OrienteeringMap(object):
 
@@ -108,8 +109,45 @@ def main():
         map.prep_show_map()
 
     elif mode == "ScoreO":
-        print("im a scoreo")
+        print(str(flags))
+        nodes = flags[1:]
+        parents = {flags[0]: (0, "S")}
+        pq = []
+        for i in range(1, len(flags)):
+            flag = flags[i]
+            parents_return_cost = a_star(flag, flags[0], map)
+            flags[i] = (flag, parents_return_cost)
 
+            parents[(flags[0],)+(flags[i][0],)] = flag
+            heapq.heappush(pq, (heuristic(flags[0], flag, map), (flags[0], flags[i][0])))
+
+        print(str(parents))
+
+        print("pq: " + str(pq))
+        while len(pq) > 0:
+            curr = heapq.heappop(pq)
+            print(str(curr))
+            if curr[0] > time_limit:
+                # the shortest time will put us over the time limit
+                break
+
+            for s in nodes:
+                if s not in curr[1]:
+                    pixel_parents = a_star(curr[1][len(curr[1]-1)], s, map)
+                    parents[curr[1] + (s,)] = (curr, pixel_parents)
+                    # extract cost from parents dict return
+                    target_pixel = map.get_pixel(target[0], target[1])
+                    cost = target_pixel.current_cost
+                    heapq.heappush(pq, (cost, curr[1] + (s,)))
+
+
+        scoreo_trace_map(flags[0], parents, map)
+        map.prep_show_map()
+
+
+
+def scoreo_heuristic(source, target, map):
+    return heuristic(source, target, map) + heuristic(target, source, map)
 
 def a_star(start, target, map):
     parents = {start: (0, "S")}
@@ -128,6 +166,7 @@ def heuristic(source, target, map):
     pixel_color = map.get_pixel(source[0], source[1]).color
     if pixel_color == WATER or pixel_color == OOB or pixel_color == IMPASSABLE_VEGETATION:
         return float("inf")
+    # approximate time in seconds for human to walk x direction and/or y direction
     return abs(target[0] - source[0]) * 6.174 + abs(target[1] - source[1]) * 4.53
 
 def successors(curr):
@@ -186,10 +225,10 @@ def cost(source, target, parents,  map):
 
     cost_to_take *= elevation_mult
     estimated_cost = heuristic(source, target, map)
-    #return cost_target * height_multiplier
-    print("source_cost: " + str(source_cost))
-    print("cost_to_take: " + str(cost_to_take))
-    print("estimated_cost: " + str(estimated_cost))
+
+    #print("source_cost: " + str(source_cost))
+    #print("cost_to_take: " + str(cost_to_take))
+    #print("estimated_cost: " + str(estimated_cost))
     return source_cost + cost_to_take + estimated_cost
 
 
@@ -198,6 +237,10 @@ def trace_map(end, parents, map):
     while curr != 'S':
         map.mark_pixel_seen(curr[0], curr[1])
         curr = parents[curr][1]
+
+def scoreo_trace_map(end, parents, map):
+    current_trace_path = parents[end]
+    print(str(current_trace_path))
 
 
 if __name__ == "__main__":
