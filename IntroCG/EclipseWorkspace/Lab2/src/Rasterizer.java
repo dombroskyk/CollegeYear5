@@ -23,30 +23,53 @@ public class Rasterizer {
 		private int minY;
 		private int maxY;
 		private int xVal;
-		private double m;
+		private int slopeSign;
+		private int dX;
+		private int dY;
+		private int sum;
+		private Edge nextEdge;
 		
 		Edge( int x0, int y0, int x1, int y1 ){
 			if( y0 > y1 ){
 				this.minY = y1;
-				this.xVal = x1;
 				this.maxY = y0;
+				this.xVal = x1;
+				
 			} else {
 				this.minY = y0;
-				this.xVal = x0;
 				this.maxY = y1;
+				this.xVal = x0;
 			}
-			if( x0 - x1 == 0 ){
-				this.m = Double.POSITIVE_INFINITY;
+			
+			this.dX = x0 - x1;
+			this.dY = y0 - y1;
+			this.sum = dX;
+			
+			if( ( this.dX < 0 && this.dY < 0 ) || ( this.dX > 0 && this.dY > 0 ) ){
+				this.slopeSign = 1;
 			} else {
-				this.m = (y0 - y1) / (x0 - x1);
+				this.slopeSign = -1;
 			}
+			
+			this.dX = Math.abs(this.dX);
+			this.dY = Math.abs(this.dY);
+		}
+		
+		public int getMinY(){
+			return this.minY;
+		}
+		
+		public Edge getNextEdge(){
+			return this.nextEdge;
 		}
 		
 		public String toString(){
-			return "Edge - minY: " + Integer.toString(this.minY) + ", maxY: " +
-					Integer.toString(this.maxY) + ", xVal: " + 
-					Integer.toString(this.xVal) + ", m: " + 
-					Double.toString(this.m);
+			return Integer.toString(this.maxY) + "|" + 
+				Integer.toString(this.xVal) + "|" + 
+				Integer.toString(this.slopeSign) + "|" +
+				Integer.toString(this.dX) + "|" +
+				Integer.toString(this.dY) + "|" +
+				Integer.toString(this.sum);
 		}
 	}
 	
