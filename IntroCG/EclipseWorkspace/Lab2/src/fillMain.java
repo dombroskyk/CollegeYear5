@@ -93,7 +93,7 @@ public class fillMain implements GLEventListener, KeyListener {
         R.drawPolygon( 4, x, y );
     
         // RIGHT BOTTOM TRIANGLE
-        /*x[0] = 800;  y[0] = 120;
+        x[0] = 800;  y[0] = 120;
         x[1] = 740;  y[1] =  60;
         x[2] = 620;  y[2] =  60;
         R.C.setColor( 0.90f, 0.0f, 0.0f );
@@ -146,7 +146,7 @@ public class fillMain implements GLEventListener, KeyListener {
         x[2] = 420;  y[2] = 280;
         R.C.setColor( 0.0f, 1.0f, 0.0f );
         R.drawPolygon( 3, x, y );
-    
+
         // ########## QUAD ##########
         x[0] = 380;  y[0] = 280;
         x[1] = 320;  y[1] = 320;
@@ -154,7 +154,7 @@ public class fillMain implements GLEventListener, KeyListener {
         x[3] = 420;  y[3] = 340;
         R.C.setColor( 0.0f, 0.8f, 0.8f );
         R.drawPolygon( 4, x, y );
-    
+        
         // ############ STAR #############
         // RIGHT SIDE
         x[0] = 230;  y[0] = 389;
@@ -251,7 +251,7 @@ public class fillMain implements GLEventListener, KeyListener {
         x[2] = 880;  y[2] =  10;
         x[3] = 880;  y[3] =   0;
         R.C.setColor( 0.4f, 0.5f, 0.1f );
-        R.drawPolygon( 4, x, y );*/
+        R.drawPolygon( 4, x, y );
 
     }
 

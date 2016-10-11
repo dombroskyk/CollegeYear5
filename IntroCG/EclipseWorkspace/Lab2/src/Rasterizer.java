@@ -20,14 +20,14 @@ public class Rasterizer {
 	
 	private class Edge {
 		
-		private int minY;
-		private int maxY;
-		private int xVal;
-		private int slopeSign;
-		private int dX;
-		private int dY;
-		private int sum;
-		private Edge nextEdge;
+		public int minY;
+		public int maxY;
+		public int xVal;
+		public int slopeSign;
+		public int dX;
+		public int dY;
+		public int sum;
+		public Edge nextEdge;
 		
 		Edge( int x0, int y0, int x1, int y1 ){
 			if( y0 > y1 ){
@@ -43,7 +43,7 @@ public class Rasterizer {
 			
 			this.dX = x0 - x1;
 			this.dY = y0 - y1;
-			this.sum = dX;
+			this.sum = 0;
 			
 			if( ( this.dX < 0 && this.dY < 0 ) || ( this.dX > 0 && this.dY > 0 ) ){
 				this.slopeSign = 1;
@@ -55,35 +55,31 @@ public class Rasterizer {
 			this.dY = Math.abs(this.dY);
 		}
 		
-		public int getMinY(){
-			return this.minY;
-		}
-		
-		public Edge getNextEdge(){
-			return this.nextEdge;
-		}
-		
 		public String toString(){
 			return Integer.toString(this.maxY) + "|" + 
 				Integer.toString(this.xVal) + "|" + 
 				Integer.toString(this.slopeSign) + "|" +
 				Integer.toString(this.dX) + "|" +
 				Integer.toString(this.dY) + "|" +
-				Integer.toString(this.sum);
+				Integer.toString(this.sum) + "|minY:" +
+				Integer.toString(this.minY);
 		}
-	}
-	
-	private class EdgeComparator implements Comparator{
 		
-		
-		public int compare( Edge e1, Edge e2 ){
-			if( e1.minY < e2.minY ){
-				return -1;
-			} else if ( e2.minY < e1.minY ){
-				return 1;
-			} else {
-				return 0;
-			}
+		///
+	    // Create a deepcopy of an Edge.
+	    //
+		// @return The deepcopied edge without nextEdge references
+	    ///
+		public Edge deepcopy(){
+			Edge newEdge = new Edge(0, 0, 0, 0);
+			newEdge.minY = this.minY;
+			newEdge.maxY = this.maxY;
+			newEdge.xVal = this.xVal;
+			newEdge.slopeSign = this.slopeSign;
+			newEdge.dX = this.dX;
+			newEdge.dY = this.dY;
+			newEdge.sum = this.sum;
+			return newEdge;
 		}
 	}
     
@@ -124,18 +120,201 @@ public class Rasterizer {
     ///
     public void drawPolygon( int n, int x[], int y[] )
     {
-    	System.out.println("One invocation");
-    	Edge[] allEdges = new Edge[n];
+    	//initialize edges and add to globalEdgeTable
+    	Edge[] globalEdgeTable = new Edge[600];
+    	int absMinY = 601;
+    	int absMaxY = -1;
         for( int i = 0; i < n-1; i++ ){
-        	allEdges[i] = new Edge( x[i], y[i], x[i+1], y[i+1] );
+        	Edge newEdge = new Edge( x[i], y[i], x[i+1], y[i+1] );
+        	int currMinY = newEdge.minY;
+        	int currMaxY = newEdge.maxY;
+        	addToEdgeTable( newEdge, globalEdgeTable );
+        	if( currMinY < absMinY ){
+        		absMinY = currMinY;
+        	}
+        	if( currMaxY > absMaxY ){
+        		absMaxY = currMaxY;
+        	}
         }
-        allEdges[n-1] = new Edge( x[n-1], y[n-1], x[0], y[0] );
+        Edge newEdge = new Edge( x[n-1], y[n-1], x[0], y[0] );
+        int currMinY = newEdge.minY;
+        int currMaxY = newEdge.maxY;
+        addToEdgeTable( newEdge, globalEdgeTable );
+    	if( currMinY < absMinY ){
+    		absMinY = currMinY;
+    	}
+    	if( currMaxY > absMaxY ){
+    		absMaxY = currMaxY;
+    	}
         
-        for( Edge edge : allEdges ){
-        	System.out.println(edge);
+        for( int i = absMinY; i <= absMaxY; i++ ){
+        	System.out.print(i + ": " + globalEdgeTable[i]);
+        	if( globalEdgeTable[i] != null ){
+        		Edge nextEdge = globalEdgeTable[i].nextEdge;
+	        	while( nextEdge != null ){
+	        		
+	        		System.out.print("|||" + nextEdge.toString());
+	        		nextEdge = nextEdge.nextEdge;
+	        	}
+        	}
+        	System.out.println();
         }
         
-        Edge[] globalEdgeTable = new Edge[n];
+        int edgeIndex = absMinY;
+        Edge activeListHead = null;
+        while( edgeIndex <= absMaxY ){
+        	System.out.println("iter: " + edgeIndex);
+        	// remove all entries from active list whose y is greater than y index
+        	if( activeListHead != null ){
+	        	while( activeListHead != null && activeListHead.maxY == edgeIndex ){
+	        		activeListHead = activeListHead.nextEdge;
+	        	}
+	        	
+	        	if( activeListHead != null ){
+		        	Edge currActiveEdge = activeListHead;
+		        	while( currActiveEdge.nextEdge != null ){
+		        		if( currActiveEdge.nextEdge.maxY <= edgeIndex ){
+		        			currActiveEdge.nextEdge = currActiveEdge.nextEdge.nextEdge;
+		        		} else {
+		        			currActiveEdge = currActiveEdge.nextEdge;
+		        		}
+		        	}
+	        	}
+        	}
+        	
+        	// add current y index to activeList and sort
+        	Edge newEdgeHead = globalEdgeTable[edgeIndex];
+	        while( newEdgeHead != null ){
+	        	
+	        	if( activeListHead == null ){
+	        		// if table happens to be empty, just add current new edge
+	        		activeListHead = newEdgeHead.deepcopy();
+	        		activeListHead.nextEdge = null;
+	        		
+	        		newEdgeHead = newEdgeHead.nextEdge;
+	        	} else {
+	        		// else, insertion sort into active list
 
+	        		boolean placed = false;
+	        		Edge currActiveEdge = activeListHead;
+	        		// attempt insert to head
+	        		if( newEdgeHead.xVal < currActiveEdge.xVal ){
+	        			Edge insertEdge = newEdgeHead.deepcopy();
+	        			newEdgeHead = newEdgeHead.nextEdge;
+	        			
+	        			insertEdge.nextEdge = activeListHead;
+	        			activeListHead = insertEdge;
+	        			placed = true;
+	        		} else if( newEdgeHead.xVal == currActiveEdge.xVal && 
+	        				newEdgeHead.dX * newEdgeHead.dY * 
+	        				newEdgeHead.slopeSign * currActiveEdge.dY <
+	        				currActiveEdge.dX * currActiveEdge.dY * 
+	        				currActiveEdge.slopeSign * newEdgeHead.dY ){
+	        			Edge insertEdge = newEdgeHead.deepcopy();
+	        			newEdgeHead = newEdgeHead.nextEdge;
+	        			
+	        			insertEdge.nextEdge = activeListHead;
+	        			activeListHead = insertEdge;
+	        			placed = true;
+	        		}
+	        		
+	        		//insert into middle of list
+	        		while( !placed && currActiveEdge != null && currActiveEdge.nextEdge != null ){
+	        			
+	        			if( newEdgeHead.xVal < currActiveEdge.nextEdge.xVal ){
+		        			Edge insertEdge = newEdgeHead.deepcopy();
+		        			newEdgeHead = newEdgeHead.nextEdge;
+		        			
+		        			insertEdge.nextEdge = currActiveEdge.nextEdge;
+		        			currActiveEdge = insertEdge;
+		        			placed = true;
+		        		} else if( newEdgeHead.xVal == currActiveEdge.nextEdge.xVal && 
+		        				newEdgeHead.dX * newEdgeHead.dY * 
+		        				newEdgeHead.slopeSign * currActiveEdge.nextEdge.dY <
+		        				currActiveEdge.nextEdge.dX * currActiveEdge.nextEdge.dY * 
+		        				currActiveEdge.nextEdge.slopeSign * newEdgeHead.dY ){
+		        			Edge insertEdge = newEdgeHead.deepcopy();
+		        			newEdgeHead = newEdgeHead.nextEdge;
+		        			
+		        			insertEdge.nextEdge = currActiveEdge.nextEdge;
+		        			currActiveEdge = insertEdge;
+		        			placed = true;
+		        		}
+	        			
+	        			currActiveEdge = currActiveEdge.nextEdge;
+	        		}
+	        		
+	        		//place at end
+	        		if( !placed ){
+	        			Edge insertEdge = newEdgeHead.deepcopy();
+	        			newEdgeHead = newEdgeHead.nextEdge;
+	        			currActiveEdge.nextEdge = insertEdge;
+	        		}
+	        	}
+	        }
+        	
+        	// fill pixels
+        	Edge currActiveEdge = activeListHead;
+        	boolean draw = true;
+        	while( currActiveEdge != null ){
+        		System.out.println("in on iter");
+        		Edge nextActiveEdge = currActiveEdge.nextEdge;
+        		System.out.println(currActiveEdge);
+        		System.out.println(nextActiveEdge);
+        		if( draw && nextActiveEdge != null ){
+        			if( currActiveEdge.xVal > nextActiveEdge.xVal ){
+        				for( int currX = nextActiveEdge.xVal; currX < currActiveEdge.xVal; currX++ ){
+            				System.out.println("coloring: " + currX + ", " + edgeIndex);
+            				C.setPixel(currX, edgeIndex);
+            			}
+        			}else{
+        			for( int currX = currActiveEdge.xVal; currX < nextActiveEdge.xVal; currX++ ){
+        				System.out.println("coloring: " + currX + ", " + edgeIndex);
+        				C.setPixel(currX, edgeIndex);
+        			}}
+        		}
+        		currActiveEdge = currActiveEdge.nextEdge;
+        		draw = !draw;
+        	}
+        	
+        	// increment y
+        	edgeIndex++;
+        	
+        	// for each non vertical edge in activeList
+        	currActiveEdge = activeListHead;
+        	while( currActiveEdge != null ){
+            	// add slope to x
+        		if( currActiveEdge.dX != 0 && currActiveEdge.dY != 0 ){
+        			currActiveEdge.sum += currActiveEdge.dX;
+        			while( currActiveEdge.sum >= currActiveEdge.dY ){
+        				currActiveEdge.xVal += currActiveEdge.slopeSign;
+        				currActiveEdge.sum -= currActiveEdge.dY;
+        			}
+        		}
+        		currActiveEdge = currActiveEdge.nextEdge;
+        	}
+        }
+        
+        
+
+    }
+    
+    ///
+    // Add an edge to the global edge table.
+    //
+    // @param newEdge Edge to be inserted into globalEdgeTable
+    // @param globalEdgeTable The array for the edge to be inserted into
+    ///
+    public void addToEdgeTable( Edge newEdge, Edge[] globalEdgeTable ){
+    	int newMinY = newEdge.minY;
+    	if( globalEdgeTable[newMinY] == null ){
+    		globalEdgeTable[newEdge.minY] = newEdge;
+    	} else {
+    		Edge currEdge = globalEdgeTable[newMinY];
+    		while( currEdge.nextEdge != null ){
+    			currEdge = currEdge.nextEdge;
+    		}
+    		currEdge.nextEdge = newEdge;
+    	}
     }
 }
