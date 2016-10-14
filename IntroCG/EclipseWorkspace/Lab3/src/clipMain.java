@@ -322,11 +322,11 @@ public class clipMain implements GLEventListener, KeyListener {
     
         C.setColor( 0.0f, 0.0f, 1.0f );	// blue
         wl = 0;
-//        wl = clipper.clipPolygon( 4, quad3, tmp, clip2[0], clip2[1] );
-//        if( wl > 0 ) {
-//            drawPolygon( tmp, wl, C );
-//    	    nv[2] = wl;
-//        }
+        wl = clipper.clipPolygon( 4, quad3, tmp, clip2[0], clip2[1] );
+        if( wl > 0 ) {
+            drawPolygon( tmp, wl, C );
+    	    nv[2] = wl;
+        }
     
         ///
         // fourth polygon:  part outside on right
@@ -346,11 +346,11 @@ public class clipMain implements GLEventListener, KeyListener {
     
         C.setColor( 1.0f, 0.5f, 1.0f ); // red-greenish-blue
         wl = 0;
-//        wl = clipper.clipPolygon( 5, pent1, tmp, clip3[0], clip3[1] );
-//        if( wl > 0 ) {
-//            drawPolygon( tmp, wl, C );
-//    	    nv[4] = wl;
-//        }
+        wl = clipper.clipPolygon( 5, pent1, tmp, clip3[0], clip3[1] );
+        if( wl > 0 ) {
+            drawPolygon( tmp, wl, C );
+    	    nv[4] = wl;
+        }
     
         ///
         // sixth polygon:  outside on top, right, and bottom
@@ -358,11 +358,11 @@ public class clipMain implements GLEventListener, KeyListener {
     
         C.setColor( 0.7f, 0.7f, 0.7f );	// gray
         wl = 0;
-//        wl = clipper.clipPolygon( 7, hept1, tmp, clip4[0], clip4[1] );
-//        if( wl > 0 ) {
-//            drawPolygon( tmp, wl, C );
-//    	    nv[5] = wl;
-//        }
+        wl = clipper.clipPolygon( 7, hept1, tmp, clip4[0], clip4[1] );
+        if( wl > 0 ) {
+            drawPolygon( tmp, wl, C );
+    	    nv[5] = wl;
+        }
     
     }
     

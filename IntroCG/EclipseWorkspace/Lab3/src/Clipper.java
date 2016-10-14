@@ -59,23 +59,16 @@ public class Clipper {
     public int clipPolygon( int in, Vertex inV[], Vertex outV[],
 		            Vertex ll, Vertex ur )
     {
-    	System.out.println("!!!!!!!!!!!!!!!");
         int outLength = 0;
         ClipEdge[] clipEdges = new ClipEdge[4];
         clipEdges[0] = new ClipEdge(ll.x, ur.x, ur.y, 't');
-        System.out.println(clipEdges[0]);
         clipEdges[1] = new ClipEdge(ll.y, ur.y, ur.x, 'r');
-        System.out.println(clipEdges[1]);
         clipEdges[2] = new ClipEdge(ll.x, ur.x, ll.y, 'b');
-        System.out.println(clipEdges[2]);
         clipEdges[3] = new ClipEdge(ll.y, ur.y, ll.x, 'l');
-        System.out.println(clipEdges[3]);
         
         Vertex[] inVertices = new Vertex[inV.length];
         for( int i = 0; i < inV.length; i++ ){
         	inVertices[i] = inV[i];
-        	//System.out.println(inV.length);
-        	//System.out.println("inVertex: " + String.format("%.2f", inVertices[i].x) + ", " + String.format("%.2f", inVertices[i].y));
         }
         	
         
@@ -87,11 +80,9 @@ public class Clipper {
 	        Vertex p = inVertices[inVertices.length - 1];
 	        outLength = 0;
 	        
-	        System.out.println("Vertex p: " + String.format("%.2f", p.x) + ", " + String.format("%.2f", p.y));
-	        
 	        for( int i = 0; i < inVertices.length; i++ ){
 	        	Vertex s = inVertices[i];
-	        	System.out.println("Vertex s: " + String.format("%.2f", s.x) + ", " + String.format("%.2f", s.y));
+	        	
 	        	if( inside( s, clipEdge ) ){// Cases 1 & 4
 	        		 if ( inside( p, clipEdge )) { // Case 1
 	        			 //add s to outVertices, increment outLength
@@ -108,15 +99,12 @@ public class Clipper {
 	        			Vertex intersection = intersect( p, s, clipEdge );
 	        			//add intersection to outVertices, increment outLength
 	        			outV[outLength++] = intersection;
-	        		} else {
-	        			System.out.println("Case 3");
-	        		}// Case 3 adds nothing
+	        		} // Case 3 adds nothing
 	        	}
 	        	p = s;
 	        }
         	inVertices = new Vertex[outLength];
         	for( int i = 0; i < outLength; i++ ){
-        		//System.out.println("Vertex: " + String.format("%.2f", s.x) + ", " + String.format("%.2f", s.y)););
 	        	inVertices[i] = outV[i];
 	        }
         }
@@ -127,19 +115,19 @@ public class Clipper {
     private boolean inside( Vertex v, ClipEdge clipEdge ){
     	switch( clipEdge.side ){
     		case 't':
-    			if( v.y <= clipEdge.o && ( v.x <= clipEdge.e2 && v.x >= clipEdge.e1 ) )
+    			if( v.y <= clipEdge.o )
     				return true;
     			break;
     		case 'b':
-    			if( v.y >= clipEdge.o && ( v.x <= clipEdge.e2 && v.x >= clipEdge.e1 ) )
+    			if( v.y >= clipEdge.o )
     				return true;
     			break;
     		case 'r':
-    			if( v.x <= clipEdge.o && ( v.y <= clipEdge.e2 && v.y >= clipEdge.e1 ) )
+    			if( v.x <= clipEdge.o )
     				return true;
     			break;
     		case 'l':
-    			if( v.x >= clipEdge.o && ( v.y <= clipEdge.e2 && v.y >= clipEdge.e1 ) )
+    			if( v.x >= clipEdge.o )
     				return true;
     			break;
     	}
