@@ -15,6 +15,10 @@
 
 public class Clipper {
 
+	///
+	// Object used to represent clipping edges
+	//
+	///
 	private class ClipEdge{
 		
 		public float e1;
@@ -44,10 +48,10 @@ public class Clipper {
     // rectangular clipping region specified by lower-left corner ll and
     // and upper-right corner ur. The resulting vertices are placed in outV.
     //
-    // The routine should return the with the vertex count of polygon
-    // resulting from the clipping.
+    // The routine should return the vertex count of polygon resulting
+    // from the clipping.
     //
-    // @param in the number of vertices in the polygon to be clipped
+    // @param in   the number of vertices in the polygon to be clipped
     // @param inV  the incoming vertex list
     // @param outV the outgoing vertex list
     // @param ll   the lower-left corner of the clipping rectangle
@@ -60,12 +64,15 @@ public class Clipper {
 		            Vertex ll, Vertex ur )
     {
         int outLength = 0;
+        
+        //create ClipEdges for future use and iteration
         ClipEdge[] clipEdges = new ClipEdge[4];
         clipEdges[0] = new ClipEdge(ll.x, ur.x, ur.y, 't');
         clipEdges[1] = new ClipEdge(ll.y, ur.y, ur.x, 'r');
         clipEdges[2] = new ClipEdge(ll.x, ur.x, ll.y, 'b');
         clipEdges[3] = new ClipEdge(ll.y, ur.y, ll.x, 'l');
         
+        //deep copy inV
         Vertex[] inVertices = new Vertex[inV.length];
         for( int i = 0; i < inV.length; i++ ){
         	inVertices[i] = inV[i];
@@ -73,8 +80,10 @@ public class Clipper {
         	
         
         for( ClipEdge clipEdge : clipEdges ){
-        	System.out.println( "ClipEdge: " + clipEdge );
+        	//clip against each edge
+        	
         	if( inVertices.length == 0 ){
+        		// if there are no more vertices to iterate against, stop
         		return 0;
         	}
 	        Vertex p = inVertices[inVertices.length - 1];
@@ -83,9 +92,9 @@ public class Clipper {
 	        for( int i = 0; i < inVertices.length; i++ ){
 	        	Vertex s = inVertices[i];
 	        	
-	        	if( inside( s, clipEdge ) ){// Cases 1 & 4
+	        	if( inside( s, clipEdge ) ){ // Cases 1 & 4
 	        		 if ( inside( p, clipEdge )) { // Case 1
-	        			 //add s to outVertices, increment outLength
+	        			 // add s to outVertices, increment outLength
 	        			 outV[outLength++] = s;
 	        		 } else { // Case 4
 	        			 Vertex intersection = intersect( p, s, clipEdge );
@@ -103,6 +112,8 @@ public class Clipper {
 	        	}
 	        	p = s;
 	        }
+	        
+	        // deep copy outV into inVertices 
         	inVertices = new Vertex[outLength];
         	for( int i = 0; i < outLength; i++ ){
 	        	inVertices[i] = outV[i];
@@ -112,6 +123,22 @@ public class Clipper {
         return outLength;  // remember to return the outgoing vertex count!
     }
     
+    
+    ///
+    // inside
+    //
+    // Determine if the vertex is inside the clipping window, relative to the
+    // current clipping edge.
+    //
+    // The method should return true if the vertex is "inside", false
+    // otherwise
+    //
+    // @param v        the vertex to check if inside the polygon
+    // @param clipEdge The edge used to determine the vertex being inside
+    //
+    // @return true if v is inside of clipEdge, false otherwise
+    //
+    ///
     private boolean inside( Vertex v, ClipEdge clipEdge ){
     	switch( clipEdge.side ){
     		case 't':
@@ -134,6 +161,22 @@ public class Clipper {
     	return false;
     }
     
+    ///
+    // intersect
+    //
+    // Find the intersection point of the polygon edge created by vertices
+    // s and p and the clipping edge, clipEdge.
+    //
+    // The routine should return the vertex at the intersection
+    // of the polygon edge and clipping edge.
+    //
+    // @param s        the first vertex of the polygon edge
+    // @param p        the second vertex of the polygon edge
+    // @param clipEdge the clipping edge
+    //
+    // @return intersection vertex of the polygon and clipping edges
+    //
+    ///
     private Vertex intersect( Vertex s, Vertex p, ClipEdge clipEdge ){
     	Vertex intersection;
     	if( s.x != p.x ){
