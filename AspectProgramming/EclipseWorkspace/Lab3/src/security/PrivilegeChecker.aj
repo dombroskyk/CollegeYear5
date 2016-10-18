@@ -5,11 +5,8 @@ public aspect PrivilegeChecker {
 	
 	private Ticket currTick = null;
 	
-	before(Ticket newTicket) :
-		set(private Ticket *) && args(newTicket){
-		//System.out.println("new ticket: " + newTicket);
-		//this.currTick = newTicket; 
-	}
+	pointcut authPrivCall() :
+		@annotation(Privilege) && call( PrivClient *.*(..) );
 	
 	pointcut ticket_level(Privilege privilege) :
 		call(@Privilege * *(..)) && @annotation(privilege);
@@ -20,6 +17,10 @@ public aspect PrivilegeChecker {
 		
 		
 		return o;
+	}
+	
+	Object around(): authPrivCall() {
+		return null;
 	}
 	
 }
