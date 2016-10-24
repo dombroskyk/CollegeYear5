@@ -89,9 +89,9 @@ public class PrivilegeTest1 implements PrivClient {
 }
 
 
-// class BadGuy2 {
-//     {
-//         new Services1().status();
-//     }
-// }
+ class BadGuy2 {
+     {
+         new Services1().status();
+     }
+ }
 

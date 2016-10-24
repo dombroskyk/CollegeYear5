@@ -1,0 +1,5 @@
+package setup: Data.setup
+class ui.TTT: UI.text
+package rules_legal: PlayerRules.n_players
+package rules_win: PlayerRules.win
+

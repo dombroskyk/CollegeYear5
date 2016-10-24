@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>AOP Lab: Protection in AspectJ</comment>
+    <entry key="logFile">violations.log</entry>
+    <entry key="override_security">false</entry>
+</properties>

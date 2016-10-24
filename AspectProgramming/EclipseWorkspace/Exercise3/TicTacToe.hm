@@ -1,0 +1,19 @@
+hypermodule TicTacToe
+
+  hyperslices:
+    PlayerRules.n_players,
+    Data.setup,
+    PlayerRules.win,
+    UI.text;
+
+  relationships:
+    mergeByName;
+    override action PlayerRules.n_players.TTTBoard.getNumPlayers with
+       action Data.setup.TTTBoard.getNumPlayers;
+    override action PlayerRules.win.TTTBoard.getMark with
+       action Data.setup.TTTBoard.getMark;
+    override action PlayerRules.win.TTTBoard.getDimension with
+       action Data.setup.TTTBoard.getDimension;
+
+end hypermodule;
+

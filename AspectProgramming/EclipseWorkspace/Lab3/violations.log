@@ -1,0 +1,5 @@
+Log file started Tue Oct 18 22:59:01 EDT 2016
+test.PrivilegeTest1.doServices(PrivilegeTest1.java:40)/Ticket[1000006] --> test.Services1.mgr_admin(PrivilegeTest1.java:45)!MANAGER
+test.PrivilegeTest1.doServices(PrivilegeTest1.java:40)/Ticket[1000106] --> test.Services1.admin_only(PrivilegeTest1.java:47)!ADMIN
+test.PrivilegeTest1$BadGuy1.<init>(PrivilegeTest1.java:20) --> test.Services1.status(PrivilegeTest1.java:20)
+Log file closed Tue Oct 18 22:59:01 EDT 2016
