@@ -1,0 +1,46 @@
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
+import jAudioFeatureExtractor.jAudioTools.AudioSamples;
+
+public class FeatureExtraction {
+	
+	public static void main(String[] args){
+		
+		if( args.length == 1 ){
+			System.err.println( "Please supply the local path to audio files to train on" );
+			System.exit(1);
+		}
+		
+		AudioSamples[] audioSamples = new AudioSamples[args.length - 1];
+		int audioSampleCount = 0;
+		for( int i = 1; i < args.length; i++ ){
+			if( args[i].substring( args[i].length() - 4 ) != ".wav" ){
+				System.out.println(args[i] + " is not a valid file format. Please only supply .wav files. Continuing execution." );
+				audioSamples[i-1] = null;
+			} else {
+				String uid = args[i].substring(0, args[i].length()-4);
+				File inputFile = new File(args[i]);
+				AudioInputStream inputStream;
+				try{
+					inputStream = AudioSystem.getAudioInputStream(inputFile);
+				} catch(Exception e){
+					System.out.println(e);
+					System.exit(2);
+				}
+				audioSampleCount++;
+			}
+		}
+		
+		AudioSamples[] audioSamples = new AudioSamples[inputStreamCount];
+		for( int i = 0; i < inputStreamCount; i++ ){
+			
+		}
+		
+	}
+	
+}
