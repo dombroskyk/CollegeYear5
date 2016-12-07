@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.sound.sampled.AudioInputStream"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="jAudioFeatureExtractor.jAudioTools.AudioSamples"/>
+<fullyQualifiedTypeName name="jAudioFeatureExtractor.AudioFeatures.MFCC"/>
+<fullyQualifiedTypeName name="jAudioFeatureExtractor.AudioFeatures.MagnitudeSpectrum"/>
+<fullyQualifiedTypeName name="jAudioFeatureExtractor.ACE.DataTypes.FeatureDefinition"/>
+</qualifiedTypeNameHistroy>

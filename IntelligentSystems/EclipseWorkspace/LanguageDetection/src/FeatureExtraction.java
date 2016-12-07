@@ -5,7 +5,9 @@ import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
+import jAudioFeatureExtractor.ACE.DataTypes.FeatureDefinition;
 import jAudioFeatureExtractor.AudioFeatures.MFCC;
+import jAudioFeatureExtractor.AudioFeatures.MagnitudeSpectrum;
 import jAudioFeatureExtractor.jAudioTools.AudioSamples;
 
 public class FeatureExtraction {
@@ -14,52 +16,46 @@ public class FeatureExtraction {
 		
 		final double SAMPLE_DURATION = 10.0d;
 		
-		if( args.length == 1 ){
+		if( args.length == 0 ){
 			System.err.println( "Please supply the local path to audio files to train on" );
 			System.exit(1);
 		}
 		// filter non .wav files
 		
 		//AudioSamples[] audioSamples = new AudioSamples[args.length - 1];
-		for( int i = 1; i < args.length; i++ ){
+		for( int i = 0; i < args.length; i++ ){
 			String uid = args[i].substring(0, args[i].length()-4);
 			File inputFile = new File(args[i]);
 			AudioSamples audioSample;
+			double[][] samples;
 			try{
 				AudioInputStream inputStream = AudioSystem.getAudioInputStream(inputFile);
 				audioSample = new AudioSamples(inputStream, uid, false);
+				samples = audioSample.getSampleWindowsMixedDown(SAMPLE_DURATION);
 			} catch(Exception e){
 				audioSample = null;
-				System.out.println(e);
+				samples = null;
+				e.printStackTrace();
 				System.exit(2);
 			}
 			
-			double duration = audioSample.getDuration();
-			double currStart = 0.0d;
-			while( currStart < duration ){
-				double currEnd;
-				if( duration-currStart < 2*SAMPLE_DURATION){
-					currEnd = duration;
-				} else {
-					currEnd = currStart + SAMPLE_DURATION;
-				}
-				
-				double[] samples;
+			double sampleRate = audioSample.getSamplingRateAsDouble();
+			for( double[] sample : samples ){
+				MagnitudeSpectrum currMagSpec = new MagnitudeSpectrum();
+				MFCC currMFCC = new MFCC();
 				try{
-					samples = audioSample.getSamplesMixedDown(currStart, currEnd);
+					double[][] mfccMagSpecPass = new double[1][];
+					mfccMagSpecPass[0] = currMagSpec.extractFeature(sample, sampleRate, null);
+					double[] mfccSamples = currMFCC.extractFeature(sample, sampleRate, mfccMagSpecPass);
+					System.out.println(mfccSamples.length);
+					for(double coef : mfccSamples){
+						System.out.println(coef);
+					}
+					System.out.println("break");
 				} catch(Exception e){
-					samples = null;
-					System.out.println(e);
+					e.printStackTrace();
 					System.exit(3);
 				}
-				
-				MFCC mfcc = new MFCC();
-				for( String dependence : mfcc.getDepenedencies()){
-					System.out.println( dependence );
-				}
-				System.out.println("boop");
-				
-				currStart += SAMPLE_DURATION;
 			}
 		}
 		
