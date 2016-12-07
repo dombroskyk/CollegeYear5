@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -38,12 +39,13 @@ public class FeatureExtraction {
 				e.printStackTrace();
 				System.exit(2);
 			}
-			
-			double sampleRate = audioSample.getSamplingRateAsDouble();
-			for( double[] sample : samples ){
-				MagnitudeSpectrum currMagSpec = new MagnitudeSpectrum();
-				MFCC currMFCC = new MFCC();
-				try{
+
+			try{
+				double sampleRate = audioSample.getSamplingRateAsDouble();
+				PrintWriter writer = new PrintWriter(uid+".csv", "UTF-8");
+				for( double[] sample : samples ){
+					MagnitudeSpectrum currMagSpec = new MagnitudeSpectrum();
+					MFCC currMFCC = new MFCC();
 					double[][] mfccMagSpecPass = new double[1][];
 					mfccMagSpecPass[0] = currMagSpec.extractFeature(sample, sampleRate, null);
 					double[] mfccSamples = currMFCC.extractFeature(sample, sampleRate, mfccMagSpecPass);
@@ -51,11 +53,18 @@ public class FeatureExtraction {
 					for(double coef : mfccSamples){
 						System.out.println(coef);
 					}
-					System.out.println("break");
-				} catch(Exception e){
-					e.printStackTrace();
-					System.exit(3);
+					
+					
+					StringBuilder result = new StringBuilder();
+				    for(double mfcc : mfccSamples ){
+				        result.append(Double.toString(mfcc) + ",");
+				    }
+				    writer.println(result.substring(0, result.length() - 1));
 				}
+			    writer.close();
+			}catch(Exception e){
+				e.printStackTrace();
+				System.exit(3);
 			}
 		}
 		
