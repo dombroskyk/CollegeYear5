@@ -1,0 +1,29 @@
+import java.math.*;
+
+public class DTreeNode {
+
+	private double[][] inEn;
+	private double[][] inEs;
+	private double[][] inPl;
+	private int total;
+	
+	public DTreeNode(double[][] inEn, double[][] inEs, double[][] inPl){
+		this.inEn = inEn;
+		this.inEs = inEs;
+		this.inPl = inPl;
+		this.total = inEn.length + inEs.length + inPl.length;
+	}
+	
+	public double preEntropy(){
+		
+	}
+	
+	private double entropyPart(double frac){
+		return -frac * this.logCalc(frac);
+	} 
+	
+	private double logCalc(double frac){
+		return log10(-frac) / log10(2); 
+	}
+	
+}

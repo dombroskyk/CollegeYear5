@@ -1,0 +1,14 @@
+
+public class DTreeNode {
+
+	private double[][] inEn;
+	private double[][] inEs;
+	private double[][] inPl;
+	
+	public DTReeNode(double[][] inEn, double[][] inEs, double[][] inPl){
+		this.inEn = inEn;
+		this.inEs = inEs;
+		this.inPl = inPl;
+	}
+	
+}

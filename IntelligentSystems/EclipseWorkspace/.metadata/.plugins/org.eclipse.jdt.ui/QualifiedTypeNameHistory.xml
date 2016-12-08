@@ -8,4 +8,5 @@
 <fullyQualifiedTypeName name="jAudioFeatureExtractor.AudioFeatures.MFCC"/>
 <fullyQualifiedTypeName name="jAudioFeatureExtractor.AudioFeatures.MagnitudeSpectrum"/>
 <fullyQualifiedTypeName name="jAudioFeatureExtractor.ACE.DataTypes.FeatureDefinition"/>
+<fullyQualifiedTypeName name="java.io.PrintWriter"/>
 </qualifiedTypeNameHistroy>

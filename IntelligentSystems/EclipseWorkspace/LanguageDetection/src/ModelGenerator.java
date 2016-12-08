@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class ModelGenerator {
@@ -10,7 +11,7 @@ public class ModelGenerator {
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		HashMap<String, double[][]> langMFCC = new HashMap<String, double[][]>();
-		
+		int totalRecords = 0;
 		try{
 			// get number of lines in each file, initialize vector arrays
 			for(String inFileName : args){
@@ -21,12 +22,17 @@ public class ModelGenerator {
 				reader.close();
 				System.out.println(lang + ": " + lines);
 				langMFCC.put(lang, new double[lines][]);
+				totalRecords += lines;
 			}
 		} catch(Exception e){
 			e.printStackTrace();
 			System.exit(2);
 		}
 		
+		// init stat vectors
+		double[] mean = new double[13];
+		double[] max = new double[13];
+		double[] min = new double[13];
 		// read in all mfcc vectors
 		for(String inFileName : args){
 			String lang = inFileName.substring(0, 2);
@@ -42,7 +48,14 @@ public class ModelGenerator {
 	        		break;
 	        	}
 	        	System.out.println(dblStr);
-	            vector[vectorIndex++] = Double.parseDouble(dblStr);
+	        	double currValue = Double.parseDouble(dblStr);
+	        	mean[vectorIndex] += currValue;
+	        	if( currValue > max[vectorIndex] )
+	        		max[vectorIndex] = currValue;
+	        	if( currValue < min[vectorIndex] )
+	        		min[vectorIndex] = currValue;
+	            vector[vectorIndex++] = currValue;
+	        	
 	            if( vectorIndex == 13 ){
 	    	        double[][] currLang = langMFCC.get(lang);
 	    	        currLang[sampleIndex++] = vector;
@@ -52,6 +65,12 @@ public class ModelGenerator {
 	        }
 	        scanner.close();
 		}
+		
+		for(int i=0; i < mean.length; i++){
+			mean[i] /= totalRecords;
+		}
+		
+		Queue<DTreeNode> nodeDiscovery = new Queue<DTreeNode>();
 		
 	}
 	

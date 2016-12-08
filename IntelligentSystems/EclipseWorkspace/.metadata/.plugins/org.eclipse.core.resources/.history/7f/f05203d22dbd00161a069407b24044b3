@@ -1,0 +1,34 @@
+
+public class DTreeNode {
+
+	private double[][] inEn;
+	private double[][] inEs;
+	private double[][] inPl;
+	private double total;
+	
+	public DTreeNode(double[][] inEn, double[][] inEs, double[][] inPl, bool[] attrAvailable){
+		this.inEn = inEn;
+		this.inEs = inEs;
+		this.inPl = inPl;
+		this.total = inEn.length + inEs.length + inPl.length;
+	}
+	
+	public double preEntropy(){
+		return this.entropyPart((double)this.inEn.length / this.total) +
+				this.entropyPart((double)this.inEs.length / this.total) +
+				this.entropyPart((double)this.inPl.length / this.total);
+	}
+	
+	private double entropyPart(double frac){
+		return -frac * this.logCalc(frac);
+	} 
+	
+	private double logCalc(double frac){
+		return Math.log10(-frac) / Math.log10(2.0d); 
+	}
+	
+	public void chooseBranch(){
+		for()
+	}
+	
+}
