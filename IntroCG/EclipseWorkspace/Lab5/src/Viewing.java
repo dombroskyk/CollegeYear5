@@ -39,7 +39,24 @@ public class Viewing
     ///
     public void setUpFrustum( int program, GL3 gl3 )
     {
-        // Add your code here.
+    	int leftPLoc, rightPLoc, topPLoc, bottomPLoc,
+    	nearPLoc, farPLoc, orthoPLoc, frustumPLoc;
+    	leftPLoc = gl3.glGetUniformLocation( program, "scaleT" );
+    	rightPLoc = gl3.glGetUniformLocation( program, "rotateT" );
+    	topPLoc = gl3.glGetUniformLocation( program, "topP" );
+    	bottomPLoc = gl3.glGetUniformLocation( program, "bottomP" );
+    	nearPLoc = gl3.glGetUniformLocation( program, "nearP" );
+    	farPLoc = gl3.glGetUniformLocation( program, "farP" );
+    	orthoPLoc = gl3.glGetUniformLocation( program, "orthoP" );
+    	frustumPLoc = gl3.glGetUniformLocation( program, "frustumP" );
+    	gl3.glUniform1f( leftPLoc, -1.0f );
+    	gl3.glUniform1f( rightPLoc, 1.0f );
+    	gl3.glUniform1f( topPLoc, 1.0f );
+    	gl3.glUniform1f( bottomPLoc, -1.0f );
+    	gl3.glUniform1f( nearPLoc, 0.9f );
+    	gl3.glUniform1f( farPLoc, 4.5f );
+    	gl3.glUniform1i( orthoPLoc, 0 );
+    	gl3.glUniform1i( frustumPLoc, 1 );
     }
 
 
@@ -57,7 +74,25 @@ public class Viewing
     ///
     public void setUpOrtho( int program, GL3 gl3 )
     {
-        // Add your code here.
+        int leftPLoc, rightPLoc, topPLoc, bottomPLoc,
+        	nearPLoc, farPLoc, orthoPLoc, frustumPLoc;
+        leftPLoc = gl3.glGetUniformLocation( program, "scaleT" );
+        rightPLoc = gl3.glGetUniformLocation( program, "rotateT" );
+        topPLoc = gl3.glGetUniformLocation( program, "topP" );
+        bottomPLoc = gl3.glGetUniformLocation( program, "bottomP" );
+        nearPLoc = gl3.glGetUniformLocation( program, "nearP" );
+        farPLoc = gl3.glGetUniformLocation( program, "farP" );
+        orthoPLoc = gl3.glGetUniformLocation( program, "orthoP" );
+        frustumPLoc = gl3.glGetUniformLocation( program, "frustumP" );
+        gl3.glUniform1f( leftPLoc, -1.0f );
+        gl3.glUniform1f( rightPLoc, 1.0f );
+        gl3.glUniform1f( topPLoc, 1.0f );
+        gl3.glUniform1f( bottomPLoc, -1.0f );
+        gl3.glUniform1f( nearPLoc, 0.9f );
+        gl3.glUniform1f( farPLoc, 4.5f );
+        gl3.glUniform1i( orthoPLoc, 1 );
+        gl3.glUniform1i( frustumPLoc, 0 );
+        
     }
 
 
@@ -75,7 +110,13 @@ public class Viewing
     ///
     public void clearTransforms( int program, GL3 gl3 )
     {
-        // Add your code here.
+        int scaleTLoc, rotateTLoc, translateTLoc;
+        scaleTLoc = gl3.glGetUniformLocation( program, "scaleT" );
+        rotateTLoc = gl3.glGetUniformLocation( program, "rotateT" );
+        translateTLoc = gl3.glGetUniformLocation( program, "translateT" );
+        gl3.glUniform3f( scaleTLoc, 1.0f, 1.0f, 1.0f );
+        gl3.glUniform3f( rotateTLoc, 0.0f, 0.0f, 0.0f );
+        gl3.glUniform3f( translateTLoc, 0.0f, 0.0f, 0.0f );
     }
 
 
@@ -105,7 +146,13 @@ public class Viewing
         float xRotate, float yRotate, float zRotate,
         float xTranslate, float yTranslate, float zTranslate )
     {
-        // Add your code here.
+        int scaleTLoc, rotateTLoc, translateTLoc;
+        scaleTLoc = gl3.glGetUniformLocation( program, "scaleT" );
+        rotateTLoc = gl3.glGetUniformLocation( program, "rotateT" );
+        translateTLoc = gl3.glGetUniformLocation( program, "translateT" );
+        gl3.glUniform3f( scaleTLoc, xScale, yScale, zScale );
+        gl3.glUniform3f( rotateTLoc, xRotate, yRotate, zRotate );
+        gl3.glUniform3f( translateTLoc, xTranslate, yTranslate, zTranslate );
     }
 
 
@@ -123,7 +170,13 @@ public class Viewing
     ///
     void clearCamera( int program, GL3 gl3 )
     {
-        // Add your code here.
+    	int eyepointCLoc, lookatCLoc, upCLoc;
+        eyepointCLoc = gl3.glGetUniformLocation( program, "eyepointC" );
+        lookatCLoc = gl3.glGetUniformLocation( program, "lookatC" );
+        upCLoc = gl3.glGetUniformLocation( program, "upC" );
+        gl3.glUniform3f( eyepointCLoc, 0.0f, 0.0f, 0.0f );
+        gl3.glUniform3f( lookatCLoc, 0.0f, 0.0f, -1.0f );
+        gl3.glUniform3f( upCLoc, 0.0f, 1.0f, 0.0f );
     }
 
 
@@ -152,7 +205,13 @@ public class Viewing
         float lookatX, float lookatY, float lookatZ,
         float upX, float upY, float upZ )
     {
-        // Add your code here.
+    	int eyepointCLoc, lookatCLoc, upCLoc;
+        eyepointCLoc = gl3.glGetUniformLocation( program, "eyepointC" );
+        lookatCLoc = gl3.glGetUniformLocation( program, "lookatC" );
+        upCLoc = gl3.glGetUniformLocation( program, "upC" );
+        gl3.glUniform3f( eyepointCLoc, eyepointX, eyepointY, eyepointZ );
+        gl3.glUniform3f( lookatCLoc, lookatX, lookatY, lookatZ );
+        gl3.glUniform3f( upCLoc, upX, upY, upZ );
     }
 
 }
