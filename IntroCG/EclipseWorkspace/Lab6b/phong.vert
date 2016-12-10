@@ -2,7 +2,7 @@
 
 // Phong vertex shader
 //
-// Contributor:  YOUR_NAME_HERE
+// Contributor:  Kevin Dombrosky
 
 // INCOMING DATA
 
@@ -34,9 +34,8 @@ uniform float far;
 // vertex shader portion of lighting and shading here
 
 // OUTGOING DATA
-
-// add all necessary variables for communicating with
-// the fragment shader here
+out vec4 vModel;
+out vec3 fragN;
 
 void main()
 {
@@ -103,8 +102,14 @@ void main()
     // include translations; see
     // http://www.lighthouse3d.com/tutorials/glsl-tutorial/the-normal-matrix/
     // for a discussion.  normal transformation should be done using the
-    // inverse transpose of the upper-left 3x3 submatrix of the modelVew
+    // inverse transpose of the upper-left 3x3 submatrix of the modelView
     // matrix.
+    vModel = modelViewMat * vPosition;
+    mat4 inverseTranspose =  transpose( inverse( modelViewMat ) );
+    mat3 normalTransform = mat3( inverseTranspose[0].xyz,
+    			  	  	  	     inverseTranspose[1].xyz,
+								 inverseTranspose[2].xyz );
+    vec3 fragN = normalize( normalTransform * vNormal );
 
     // Transform the vertex location into clip space
     gl_Position =  projMat * viewMat  * modelMat * vPosition;
