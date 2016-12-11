@@ -21,6 +21,8 @@ uniform float kd;
 uniform float ks;
 uniform float sExp;
 
+uniform vec3 cPosition;
+
 // OUTGOING DATA
 out vec4 fragmentColor;
 
@@ -30,13 +32,15 @@ void main()
     // fragment shader portion of Phong shading
 	vec4 L = normalize( sourcePos - vModel );
 	vec4 N = vec4( fragN, 1.0 ); //is this ok?
-	vec4 V = vec4(-vModel);
-	vec4 R = normalize( -reflect( L, N ) );
+	vec4 V = normalize( -1.0 * vec4( cPosition, 1.0 ) );
+	vec4 R = normalize( -1.0 * reflect( L, N ) );
 
 	vec4 ambient = ambientColor * ka * aMatColor;
-	vec4 diffuse = sourceColor * kd * dMatColor * dot(L, N );
+	vec4 diffuse = sourceColor * kd * dMatColor * dot( L, N );
 	vec4 specular = sourceColor * ks * sMatColor * pow( dot( R, V ), sExp );
 
     fragmentColor = ambient + diffuse + specular;
-	//fragmentColor = diffuse;
+	//fragmentColor = ambient + diffuse;
+	//fragmentColor = vec4( dot( L, N ), 0.0, 0.0, 0.0 );
+	//fragmentColor = N;
 }

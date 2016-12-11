@@ -105,11 +105,12 @@ void main()
     // inverse transpose of the upper-left 3x3 submatrix of the modelView
     // matrix.
     vModel = modelViewMat * vPosition;
-    mat4 inverseTranspose =  transpose( inverse( modelViewMat ) );
-    mat3 normalTransform = mat3( inverseTranspose[0].xyz,
-    			  	  	  	     inverseTranspose[1].xyz,
-								 inverseTranspose[2].xyz );
+    mat3 submatrix = mat3( modelViewMat[0].xyz,
+    			  	  	   modelViewMat[1].xyz,
+						   modelViewMat[2].xyz );
+    mat3 normalTransform =  transpose( inverse( submatrix ) );
     vec3 fragN = normalize( normalTransform * vNormal );
+    //vec3 fragN = vNormal;
 
     // Transform the vertex location into clip space
     gl_Position =  projMat * viewMat  * modelMat * vPosition;

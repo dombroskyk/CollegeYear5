@@ -10,7 +10,11 @@
 //  Simple class for setting up texture mapping parameters.
 //
 
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.*;
@@ -19,8 +23,10 @@ import com.jogamp.opengl.util.texture.*;
 public class Textures
 {
 
-    // Add any data members you need here.
-
+	private Texture tex_id1;
+	private Texture tex_id2;
+	private int texLoc;
+	
     ///
     // constructor
     ///
@@ -39,7 +45,16 @@ public class Textures
     ///
     public void loadTexture( GL3 gl3 )
     {
-        // Add your code here.
+    	
+    	try {
+    		InputStream stream1 = new FileInputStream( "smiley2.png" );
+    		InputStream stream2 = new FileInputStream( "frowny2.png" );
+    		tex_id1 = TextureIO.newTexture( stream1, false, "png");
+    		tex_id2 = TextureIO.newTexture( stream2, false, "png");
+    	} catch ( IOException exc ) {
+    		exc.printStackTrace();
+    		System.exit(1);
+    	}
     }
 
     ///
@@ -57,6 +72,8 @@ public class Textures
     ///
     public void setUpTexture( int program, GL3 gl3 )
     {
-        // Add your code here.
+
+        int tex1;
+        int tex2;
     }
 }
