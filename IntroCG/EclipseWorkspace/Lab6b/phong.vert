@@ -109,7 +109,7 @@ void main()
     			  	  	   modelViewMat[1].xyz,
 						   modelViewMat[2].xyz );
     mat3 normalTransform =  transpose( inverse( submatrix ) );
-    vec3 fragN = normalize( normalTransform * vNormal );
+    fragN = normalize( normalTransform * vNormal );
     //vec3 fragN = vNormal;
 
     // Transform the vertex location into clip space

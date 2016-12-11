@@ -46,15 +46,15 @@ public class Textures
     public void loadTexture( GL3 gl3 )
     {
     	
-    	try {
-    		InputStream stream1 = new FileInputStream( "smiley2.png" );
-    		InputStream stream2 = new FileInputStream( "frowny2.png" );
-    		tex_id1 = TextureIO.newTexture( stream1, false, "png");
-    		tex_id2 = TextureIO.newTexture( stream2, false, "png");
-    	} catch ( IOException exc ) {
-    		exc.printStackTrace();
-    		System.exit(1);
-    	}
+//    	try {
+//    		InputStream stream1 = new FileInputStream( "smiley2.png" );
+//    		InputStream stream2 = new FileInputStream( "frowny2.png" );
+//    		tex_id1 = TextureIO.newTexture( stream1, false, "png");
+//    		tex_id2 = TextureIO.newTexture( stream2, false, "png");
+//    	} catch ( IOException exc ) {
+//    		exc.printStackTrace();
+//    		System.exit(1);
+//    	}
     }
 
     ///
