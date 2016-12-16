@@ -33,9 +33,13 @@ uniform float far;
 // add all necessary variables for doing the
 // vertex shader portion of lighting and shading here
 
+// Light location (in model space)
+uniform vec4 sourcePos;
+
 // OUTGOING DATA
 out vec4 vModel;
 out vec3 fragN;
+out vec4 sourcePosEye;
 
 void main()
 {
@@ -106,11 +110,10 @@ void main()
     // matrix.
     vModel = modelViewMat * vPosition;
     // get submatrix & normalize
-    mat3 submatrix = mat3( modelViewMat[0].xyz,
-    			  	  	   modelViewMat[1].xyz,
-						   modelViewMat[2].xyz );
+    mat3 submatrix = mat3( modelViewMat );
     mat3 normalTransform =  transpose( inverse( submatrix ) );
     fragN = normalize( normalTransform * vNormal );
+    sourcePosEye = normalize( viewMat * sourcePos );
 
     // Transform the vertex location into clip space
     gl_Position =  projMat * viewMat  * modelMat * vPosition;
